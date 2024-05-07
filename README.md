@@ -37,7 +37,7 @@ The overall flow for performing KSM can be outlined as follows:
 
 3. Once you find an existing page frame with the same content as the current one, update the corresponding page table entry (PTE) to point to the existing page frame and release the current page frame. Please note that when a page frame is shared by multiple virtual pages, page write permissions (`W` bit in PTE) should be removed from all the PTEs referencing the shared page frame.
 
-4. You are required to preallocate a "___zero-page___" in the system which is filled with zeroes. Since BSS and heap pages are initialized to zero, those pages can be mapped to the zero-page.  
+4. You are required to preallocate a "___zero-page___" in the system which is filled with zeroes. Any page frames that are entirely zero-filled, such as BSS and heap pages initialized to zeroes, can be mapped to this zero-page.  
 
 5. If a process attempts to write data to a shared page frame, it will trigger a page fault. In this situation, you should perform copy-on-write (COW) by allocating a new page frame, copying the content from the shared page frame, and updating the corresponding PTE to reference the new private page frame while enabling the write permission. Later, this private page frame can be merged again if another page frame with identical content is found.
 
